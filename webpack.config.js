@@ -2,53 +2,53 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
 module.exports = {
-  entry: './src/index.tsx', // Входной файл
+  entry: './src/index.tsx', 
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js',
-    publicPath: '/', // Для корректной работы с маршрутизацией в React Router
+    publicPath: '/', 
   },
   resolve: {
-    extensions: ['.ts', '.tsx', '.js', '.jsx'], // Поддержка расширений файлов
+    extensions: ['.ts', '.tsx', '.js', '.jsx'], 
   },
   module: {
     rules: [
       {
-        test: /\.tsx?$/, // Для TypeScript файлов
+        test: /\.tsx?$/, 
         use: 'ts-loader',
         exclude: /node_modules/,
       },
       {
-        test: /\.css$/, // Для CSS файлов
+        test: /\.css$/, 
         use: ['style-loader', 'css-loader'],
       },
       {
-        test: /\.jsx?$/, // Для JavaScript/React файлов
+        test: /\.jsx?$/, 
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader', // Babel для поддержки ES6+ и JSX
+          loader: 'babel-loader',
           options: {
             presets: ['@babel/preset-react', '@babel/preset-env'],
           },
         },
       },
       {
-        test: /\.svg$/, // Для загрузки SVG
-        use: ['@svgr/webpack', 'url-loader'], // Используем @svgr для обработки SVG как React-компонентов
+        test: /\.svg$/, 
+        use: ['@svgr/webpack', 'url-loader'], 
       },
     ],
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: './public/index.html', // путь к твоему HTML файлу
+      template: './public/index.html', 
     }),
   ],
-  devtool: 'source-map', // Для отладки
+  devtool: 'source-map',
   devServer: {
-    static: path.join(__dirname, 'dist'), // Статические файлы из папки dist
+    static: path.join(__dirname, 'dist'),
     compress: true,
-    port: 3000, // Порт для dev-сервера
-    historyApiFallback: true, // Для корректной работы React Router
-    open: true, // Автоматически открывает браузер при старте
+    port: 3000, 
+    historyApiFallback: true, 
+    open: true, 
   },
 };
