@@ -52,19 +52,20 @@ const SwiperArrow: React.FC<SwiperArrowProps> = ({ setArrowSwiper, secondSwiper 
 
   const handleNext = () => {
     if (currentSlide < totalSlides) {
-      if (secondSwiper) {
-        secondSwiper.slideNext();
-      }
+        secondSwiper?.slideNext();
+    } else {
+        secondSwiper?.slideTo(0);
     }
   };
 
   const handlePrev = () => {
-    if (currentSlide > 1) {
-      if (secondSwiper) {
-        secondSwiper.slidePrev();
-      }
+    if (currentSlide === 1) {
+        secondSwiper?.slideTo(totalSlides);
+    } else {
+        secondSwiper?.slidePrev();
     }
   };
+  
 
   const handleSlideChange = (swiper: SwiperType) => {
     setCurrentSlide(swiper.realIndex + 1); // обновляем текущий слайд
