@@ -28,10 +28,10 @@ const StyledSwiper = styled(SwiperComponent)`
   margin: 0;
 `;
 
-const Box = styled.div`
-  display: flex;
-  align-items: center;
-`;
+// const Box = styled.div`
+//   display: flex;
+//   align-items: center;
+// `;
 
 const Counter = styled.p`
   margin: 0;
@@ -52,23 +52,28 @@ const SwiperArrow: React.FC<SwiperArrowProps> = ({ setArrowSwiper, secondSwiper 
 
   const handleNext = () => {
     if (currentSlide < totalSlides) {
-        secondSwiper?.slideNext();
+      if (secondSwiper) {
+        secondSwiper.slideNext();
+      }
     } else {
-        secondSwiper?.slideTo(0);
+      secondSwiper?.slideTo(0)
     }
   };
 
   const handlePrev = () => {
-    if (currentSlide === 1) {
-        secondSwiper?.slideTo(totalSlides);
+    if (currentSlide > 1) {
+      if (secondSwiper) {
+        secondSwiper.slideTo(totalSlides);
+      }
     } else {
-        secondSwiper?.slidePrev();
+      if (secondSwiper) {
+        secondSwiper.slidePrev();
+      }
     }
   };
-  
 
   const handleSlideChange = (swiper: SwiperType) => {
-    setCurrentSlide(swiper.realIndex + 1); // обновляем текущий слайд
+    setCurrentSlide(swiper.realIndex + 1);
   };
 
   return (
@@ -84,18 +89,14 @@ const SwiperArrow: React.FC<SwiperArrowProps> = ({ setArrowSwiper, secondSwiper 
         slidesPerView={1}
         loop={true}
       >
-        <Box>
-          <StyledSwiperSlide></StyledSwiperSlide>
-          <StyledSwiperSlide></StyledSwiperSlide>
-          <StyledSwiperSlide></StyledSwiperSlide>
-          <StyledSwiperSlide></StyledSwiperSlide>
-          <StyledSwiperSlide></StyledSwiperSlide>
-          <StyledSwiperSlide></StyledSwiperSlide>
-        </Box>
-        <Counter>
-          {String(currentSlide).padStart(2, '0')}/{String(totalSlides).padStart(2, '0')}
-        </Counter>
+        {[...Array(totalSlides)].map((_, index) => (
+          <StyledSwiperSlide key={index}>
+          </StyledSwiperSlide>
+        ))}
       </StyledSwiper>
+      <Counter>
+        {String(currentSlide).padStart(2, '0')}/{String(totalSlides).padStart(2, '0')}
+      </Counter>
       <ArrowBtn onClick={handlePrev}>&lt;</ArrowBtn>
       <ArrowBtn onClick={handleNext}>&gt;</ArrowBtn>
     </>

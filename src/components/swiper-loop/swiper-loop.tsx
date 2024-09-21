@@ -6,6 +6,8 @@ import 'swiper/css';
 import styled from 'styled-components';
 import gsap from 'gsap';
 import SwiperLoopDot from '../swiper-loop-dot/swiper-loop-dot';
+import { useSlides } from '../../context/slides-context';
+import AnimatedYears from '../animated-years/animated-years';
 
 interface SwiperLoopProps {
   setSwiperLoop: (swiper: SwiperType) => void;
@@ -38,31 +40,51 @@ const HoverNumber = styled.p`
   color: black;
 `;
 
+const BlockTitle = styled.p`
+  position: absolute;
+  left: 70px;
+  color: rgba(66, 86, 122, 1);
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+  animation: fadeIn 1s ease-in-out 1s forwards;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 30px;
+  text-align: left;
+
+  @keyframes fadeIn {
+    to {
+      opacity: 1;
+    }
+  }
+`;
+
 const SwiperLoop: React.FC<SwiperLoopProps> = ({ setSwiperLoop, firstSwiper, secondSwiper }) => {
   const dotsWrapperRef = useRef<HTMLDivElement>(null);
   const [activeDot, setActiveDot] = useState<number>(0); // стейт для активной точки
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(0); // cтейт для отслеживания наведенной точки
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null); // cтейт для отслеживания наведенной точки
   const [rotationAngle, setRotationAngle] = useState<number>(0); // стейт для угла вращения
-
-  const totalSlides = 6;
   const radius = 265;
+  
+  const slides = useSlides();
+  const totalSlides = slides.length;
+  
   const anglePerDot = (Math.PI * 2) / totalSlides; // выставляем угол точек, в зависимости от количества
-
   const updateRotation = (newActiveIndex: number) => {
-    const deltaIndex = (newActiveIndex - activeDot + totalSlides) % totalSlides; // считаем на сколько индексов изменился активный элемент
-    const reverseDeltaIndex = (activeDot - newActiveIndex + totalSlides) % totalSlides; // считаем сколько нужно пройти в обратном направлении
-  
-    const isForward = deltaIndex <= reverseDeltaIndex; // определяем направление
-    const deltaAngle = isForward ? deltaIndex * anglePerDot : -reverseDeltaIndex * anglePerDot; // считаем угол в зависимости от направления
+    const deltaIndex = (newActiveIndex - activeDot + totalSlides) % totalSlides;
+    const reverseDeltaIndex = (activeDot - newActiveIndex + totalSlides) % totalSlides;
+
+    const isForward = deltaIndex <= reverseDeltaIndex;
+    const deltaAngle = isForward ? deltaIndex * anglePerDot : -reverseDeltaIndex * anglePerDot;
     const newRotationAngle = rotationAngle - (deltaAngle * 180) / Math.PI;
-  
+
     setRotationAngle(newRotationAngle);
-  
+
     if (dotsWrapperRef.current) {
       gsap.to(dotsWrapperRef.current, {
-        duration: 2,
+        duration: 1,
         ease: 'power2.out',
-        rotate: `${newRotationAngle}deg`,  // угол вращения
+        rotate: `${newRotationAngle}deg`,
         force3D: true,
       });
     }
@@ -71,9 +93,14 @@ const SwiperLoop: React.FC<SwiperLoopProps> = ({ setSwiperLoop, firstSwiper, sec
   };
 
   const handleSlideChange = (swiper: SwiperType) => {
-    updateRotation(swiper.realIndex);
-    if (firstSwiper) {
-      firstSwiper.slideTo(swiper.realIndex);
+    const newIndex = swiper.realIndex;
+    if (newIndex !== activeDot) {
+      updateRotation(newIndex);
+      setActiveDot(newIndex);
+      
+      if (firstSwiper && firstSwiper.realIndex !== newIndex) {
+        firstSwiper.slideTo(newIndex);
+      }
     }
   };
 
@@ -81,7 +108,7 @@ const SwiperLoop: React.FC<SwiperLoopProps> = ({ setSwiperLoop, firstSwiper, sec
     <CircleContainer>
       <DotsWrapper ref={dotsWrapperRef}>
         {Array.from({ length: totalSlides }, (_, index) => {
-          const offsetAngle = -Math.PI / 4;
+          const offsetAngle = -Math.PI / 4; // смещение
           const angle = index * anglePerDot + offsetAngle;
           const x = Math.cos(angle) * radius + 265;
           const y = Math.sin(angle) * radius + 265;
@@ -94,7 +121,7 @@ const SwiperLoop: React.FC<SwiperLoopProps> = ({ setSwiperLoop, firstSwiper, sec
                 transform: `translate(${x}px, ${y}px) translate(-50%, -50%) rotate(${-rotationAngle}deg)`,
               }}
               onMouseEnter={() => setHoveredIndex(index)}
-              onMouseLeave={() => setHoveredIndex(null)} 
+              onMouseLeave={() => setHoveredIndex(null)}
               onClick={() => {
                 updateRotation(index);
                 if (firstSwiper) {
@@ -105,8 +132,11 @@ const SwiperLoop: React.FC<SwiperLoopProps> = ({ setSwiperLoop, firstSwiper, sec
                 }
               }}
             >
-              {(activeDot === index || hoveredIndex === index) && ( // показываем номер при наведении или если активен
+              {(activeDot === index || hoveredIndex === index) && (
                 <HoverNumber>{index + 1}</HoverNumber>
+              )}
+              {activeDot === index && (
+                <BlockTitle>{slides[index]?.title}</BlockTitle>
               )}
             </SwiperLoopDot>
           );
@@ -121,9 +151,10 @@ const SwiperLoop: React.FC<SwiperLoopProps> = ({ setSwiperLoop, firstSwiper, sec
         slidesPerView={1}
         loop={true}
       >
-        {Array.from({ length: totalSlides }, (_, index) => (
-          <SwiperSlide key={index}>Слайд {index + 1}</SwiperSlide>
-        ))}
+        {slides.map((slide, index) => (
+        <SwiperSlide key={index}></SwiperSlide>
+      ))}
+        <AnimatedYears activeSlideIndex={activeDot} slides={slides} />
       </SwiperComponent>
     </CircleContainer>
   );

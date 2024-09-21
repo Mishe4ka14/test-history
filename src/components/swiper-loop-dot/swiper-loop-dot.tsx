@@ -28,7 +28,7 @@ const SwiperLoopDot = styled(SlideDotComponent)<SwiperLoopDotProps>`
   align-items: center;
   cursor: pointer;
   transition: all 0.3s ease;
-
+  z-index: 100;
   &:hover {
     width: 50px;
     height: 50px;
