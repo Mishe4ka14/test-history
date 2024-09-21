@@ -59,28 +59,44 @@ const SlideDot = styled(SlideDotComponent)<SlideDotProps>`
 
 const SwiperLoop: React.FC<SwiperLoopProps> = ({ setSwiperLoop, firstSwiper, secondSwiper }) => {
   const dotsRef = useRef<HTMLDivElement[]>([]);
-  const totalSlides = 3;
+  const totalSlides = 6;
   const [activeDot, setActiveDot] = useState<number>(0);
 
-  const positionDots = () => {
-    const radius = 265;
-    const offsetAngle = -Math.PI / 4;
+  const positionDots = (activeIndex: number) => {
+    const radius = 265; // Радиус окружности
+    const offsetAngle = -Math.PI / 4; // Позиция активного кружка на 1:30
+    const totalSlides = dotsRef.current.length;
+
+    // Угол между точками на окружности
+    const anglePerDot = (Math.PI * 2) / totalSlides;
+
     dotsRef.current.forEach((dot, index) => {
-      const angle = (index / totalSlides) * Math.PI * 2 + offsetAngle;
+      const relativeIndex = (index - activeIndex + totalSlides) % totalSlides; // Рассчитываем позицию относительно активного
+      const angle = relativeIndex * anglePerDot + offsetAngle; // Угол для текущего кружка
+
+      // Вычисляем новые координаты кружка на окружности
       const x = Math.cos(angle) * radius;
       const y = Math.sin(angle) * radius;
-      gsap.set(dot, { x, y });
+
+      // Вместо использования `gsap.to()`, просто задаем translate3d для каждого кружка
+      gsap.to(dot, {
+        duration: 0.5, // Длительность анимации
+        ease: 'power2.out', // Плавная анимация
+        x: x, // Положение по X
+        y: y, // Положение по Y
+        force3D: true, // Используем 3D для повышения производительности
+      });
     });
   };
 
   useEffect(() => {
-    positionDots();
-  }, []);
+    positionDots(activeDot);
+  }, [activeDot]);
 
   const handleSlideChange = (swiper: SwiperType) => {
     setActiveDot(swiper.realIndex);
     if (firstSwiper) {
-      firstSwiper.slideTo(swiper.realIndex); // Обновляем первый слайдер
+      firstSwiper.slideTo(swiper.realIndex); // обновляем первый слайдер
     }
   };
 
@@ -94,10 +110,10 @@ const SwiperLoop: React.FC<SwiperLoopProps> = ({ setSwiperLoop, firstSwiper, sec
           onClick={() => {
             setActiveDot(index);
             if (firstSwiper) {
-              firstSwiper.slideTo(index); // Обновляем первый слайдер
+              firstSwiper.slideTo(index);
             }
             if (secondSwiper) {
-              secondSwiper.slideTo(index); // Обновляем второй слайдер
+              secondSwiper.slideTo(index);
             }
           }}
         >
@@ -122,6 +138,5 @@ const SwiperLoop: React.FC<SwiperLoopProps> = ({ setSwiperLoop, firstSwiper, sec
     </CircleContainer>
   );
 };
-
 
 export default SwiperLoop;

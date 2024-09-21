@@ -47,11 +47,11 @@ const StyledSwiperSlide = styled(SwiperSlide)`
 
 const SwiperArrow: React.FC<SwiperArrowProps> = ({ setArrowSwiper, secondSwiper }) => {
   const [currentSlide, setCurrentSlide] = useState(1);
-  const totalSlides = 3;
+  const totalSlides = 6;
   const swiperRef = useRef<SwiperType | null>(null);
 
   const handleNext = () => {
-    if (currentSlide < 3) {
+    if (currentSlide < totalSlides) {
       if (secondSwiper) {
         secondSwiper.slideNext();
       }
@@ -84,6 +84,9 @@ const SwiperArrow: React.FC<SwiperArrowProps> = ({ setArrowSwiper, secondSwiper 
         loop={true}
       >
         <Box>
+          <StyledSwiperSlide></StyledSwiperSlide>
+          <StyledSwiperSlide></StyledSwiperSlide>
+          <StyledSwiperSlide></StyledSwiperSlide>
           <StyledSwiperSlide></StyledSwiperSlide>
           <StyledSwiperSlide></StyledSwiperSlide>
           <StyledSwiperSlide></StyledSwiperSlide>
