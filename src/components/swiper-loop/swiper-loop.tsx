@@ -1,63 +1,21 @@
 import React, { useState, useRef } from 'react';
-import { Swiper as SwiperComponent, SwiperSlide } from 'swiper/react';
+import { SwiperSlide } from 'swiper/react';
 import { Swiper as SwiperType } from 'swiper';
 import { Controller } from 'swiper/modules';
 import 'swiper/css';
-import styled from 'styled-components';
 import gsap from 'gsap';
 import SwiperLoopDot from '../swiper-loop-dot/swiper-loop-dot';
 import { useSlides } from '../../context/slides-context';
 import AnimatedYears from '../animated-years/animated-years';
+import { BlockTitle, CircleContainer, DotsWrapper, HoverNumber, Line, SwiperComponentStyled } from './swiper-loop-styles';
+
+//МНОГО СТИЛЕЙ, ПОЭТОМУ В ОТДЕЛЬНОМ ФАЙЛЕ
 
 interface SwiperLoopProps {
   setSwiperLoop: (swiper: SwiperType) => void;
   firstSwiper: SwiperType | null;
   secondSwiper: SwiperType | null;
 }
-
-const CircleContainer = styled.div`
-  position: relative;
-  width: 530px;
-  height: 530px;
-  border-radius: 50%;
-  border: 2px solid #ccc;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const DotsWrapper = styled.div`
-  position: absolute;
-  width: 530px;
-  height: 530px;
-  border-radius: 50%;
-  transform-origin: center;
-  will-change: transform;
-`;
-
-const HoverNumber = styled.p`
-  z-index: 100;
-  color: black;
-`;
-
-const BlockTitle = styled.p`
-  position: absolute;
-  left: 70px;
-  color: rgba(66, 86, 122, 1);
-  opacity: 0;
-  transition: opacity 1s ease-in-out;
-  animation: fadeIn 1s ease-in-out 1s forwards;
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 30px;
-  text-align: left;
-
-  @keyframes fadeIn {
-    to {
-      opacity: 1;
-    }
-  }
-`;
 
 const SwiperLoop: React.FC<SwiperLoopProps> = ({ setSwiperLoop, firstSwiper, secondSwiper }) => {
   const dotsWrapperRef = useRef<HTMLDivElement>(null);
@@ -70,12 +28,13 @@ const SwiperLoop: React.FC<SwiperLoopProps> = ({ setSwiperLoop, firstSwiper, sec
   const totalSlides = slides.length;
   
   const anglePerDot = (Math.PI * 2) / totalSlides; // выставляем угол точек, в зависимости от количества
-  const updateRotation = (newActiveIndex: number) => {
-    const deltaIndex = (newActiveIndex - activeDot + totalSlides) % totalSlides;
-    const reverseDeltaIndex = (activeDot - newActiveIndex + totalSlides) % totalSlides;
 
-    const isForward = deltaIndex <= reverseDeltaIndex;
-    const deltaAngle = isForward ? deltaIndex * anglePerDot : -reverseDeltaIndex * anglePerDot;
+  const updateRotation = (newActiveIndex: number) => {
+    const deltaIndex = (newActiveIndex - activeDot + totalSlides) % totalSlides; // считаем на сколько индексов изменился активный элемент
+    const reverseDeltaIndex = (activeDot - newActiveIndex + totalSlides) % totalSlides; // считаем сколько нужно пройти в обратном направлении
+
+    const isForward = deltaIndex <= reverseDeltaIndex; //определяем направление
+    const deltaAngle = isForward ? deltaIndex * anglePerDot : -reverseDeltaIndex * anglePerDot; // считаем угол в зависимости от направления
     const newRotationAngle = rotationAngle - (deltaAngle * 180) / Math.PI;
 
     setRotationAngle(newRotationAngle);
@@ -84,7 +43,7 @@ const SwiperLoop: React.FC<SwiperLoopProps> = ({ setSwiperLoop, firstSwiper, sec
       gsap.to(dotsWrapperRef.current, {
         duration: 1,
         ease: 'power2.out',
-        rotate: `${newRotationAngle}deg`,
+        rotate: `${newRotationAngle}deg`,  // угол вращения
         force3D: true,
       });
     }
@@ -106,9 +65,11 @@ const SwiperLoop: React.FC<SwiperLoopProps> = ({ setSwiperLoop, firstSwiper, sec
 
   return (
     <CircleContainer>
+      <Line />
+      <Line />
       <DotsWrapper ref={dotsWrapperRef}>
         {Array.from({ length: totalSlides }, (_, index) => {
-          const offsetAngle = -Math.PI / 4; // смещение
+          const offsetAngle = -Math.PI / 3; // смещение
           const angle = index * anglePerDot + offsetAngle;
           const x = Math.cos(angle) * radius + 265;
           const y = Math.sin(angle) * radius + 265;
@@ -143,19 +104,20 @@ const SwiperLoop: React.FC<SwiperLoopProps> = ({ setSwiperLoop, firstSwiper, sec
         })}
       </DotsWrapper>
 
-      <SwiperComponent
+      <SwiperComponentStyled
         modules={[Controller]}
         onSwiper={setSwiperLoop}
         onSlideChange={handleSlideChange}
         controller={{ control: firstSwiper }}
         slidesPerView={1}
         loop={true}
+        style={{zIndex: 0}}
       >
-        {slides.map((slide, index) => (
+        {slides.map((_, index) => (
         <SwiperSlide key={index}></SwiperSlide>
       ))}
         <AnimatedYears activeSlideIndex={activeDot} slides={slides} />
-      </SwiperComponent>
+      </SwiperComponentStyled>
     </CircleContainer>
   );
 };

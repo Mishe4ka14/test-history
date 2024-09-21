@@ -28,11 +28,6 @@ const StyledSwiper = styled(SwiperComponent)`
   margin: 0;
 `;
 
-// const Box = styled.div`
-//   display: flex;
-//   align-items: center;
-// `;
-
 const Counter = styled.p`
   margin: 0;
   margin-left: 10px;
@@ -44,6 +39,10 @@ const StyledSwiperSlide = styled(SwiperSlide)`
   height: 1px;
   width: 1px;
 `;
+
+const SwiperContainer = styled.div`
+  margin-left: 10%;
+`
 
 const SwiperArrow: React.FC<SwiperArrowProps> = ({ setArrowSwiper, secondSwiper }) => {
   const [currentSlide, setCurrentSlide] = useState(1);
@@ -61,7 +60,7 @@ const SwiperArrow: React.FC<SwiperArrowProps> = ({ setArrowSwiper, secondSwiper 
   };
 
   const handlePrev = () => {
-    if (currentSlide > 1) {
+    if (currentSlide === 1) {
       if (secondSwiper) {
         secondSwiper.slideTo(totalSlides);
       }
@@ -77,7 +76,7 @@ const SwiperArrow: React.FC<SwiperArrowProps> = ({ setArrowSwiper, secondSwiper 
   };
 
   return (
-    <>
+    <SwiperContainer>
       <StyledSwiper
         modules={[Controller]}
         onSwiper={(swiper: SwiperType) => {
@@ -85,7 +84,7 @@ const SwiperArrow: React.FC<SwiperArrowProps> = ({ setArrowSwiper, secondSwiper 
           swiperRef.current = swiper;
         }}
         onSlideChange={handleSlideChange}
-        controller={{ control: secondSwiper }}
+        controller={{ control: secondSwiper }} //связан с swiperLoop
         slidesPerView={1}
         loop={true}
       >
@@ -99,7 +98,7 @@ const SwiperArrow: React.FC<SwiperArrowProps> = ({ setArrowSwiper, secondSwiper 
       </Counter>
       <ArrowBtn onClick={handlePrev}>&lt;</ArrowBtn>
       <ArrowBtn onClick={handleNext}>&gt;</ArrowBtn>
-    </>
+    </SwiperContainer>
   );
 };
 

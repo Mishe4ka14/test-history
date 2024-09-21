@@ -9,59 +9,68 @@ interface YearsDisplayProps {
 }
 
 const StyledSlide = styled.div`
-  font-size: 100px;
+  max-height: 160px;
+  font-size: 20vh;
   font-weight: 700;
   line-height: 160px;
   letter-spacing: -0.02em;
   text-align: center;
   transition: opacity 0.5s ease;
   opacity: 1;
-  z-index:0 ;
+  z-index: 101;
+`;
+
+const YearText = styled.span<{ color: string }>`
+  color: ${({ color }) => color};
+  padding-left: 2.6vw;
+  padding-right: 2.6vw;
 `;
 
 const AnimatedYears: React.FC<YearsDisplayProps> = ({ activeSlideIndex, slides }) => {
-  const [currentYear, setCurrentYear] = useState<string>(slides[activeSlideIndex].years);
+  const [currentStartYear, setCurrentStartYear] = useState<string>(slides[activeSlideIndex].years.split(' ')[0]);
+  const [currentEndYear, setCurrentEndYear] = useState<string>(slides[activeSlideIndex].years.split(' ')[1]);
 
   useEffect(() => {
     const nextYears = slides[activeSlideIndex].years;
     const [nextStartYear, nextEndYear] = nextYears.split(' ').map(Number);
-    let [currentStartYear, currentEndYear] = currentYear.split(' ').map(Number);
+    let currentStartYearNum = parseInt(currentStartYear);
+    let currentEndYearNum = parseInt(currentEndYear);
 
-    // делаем анимацию для цифр
     const animateYears = () => {
-      const startDiff = nextStartYear - currentStartYear;
-      const endDiff = nextEndYear - currentEndYear;
+      const startDiff = nextStartYear - currentStartYearNum;
+      const endDiff = nextEndYear - currentEndYearNum;
 
       const animation = gsap.to({}, {
         duration: 1,
         onUpdate: () => {
-          if (currentStartYear !== nextStartYear) {
-            currentStartYear += startDiff > 0 ? 1 : -1;
+          if (currentStartYearNum !== nextStartYear) {
+            currentStartYearNum += startDiff > 0 ? 1 : -1;
           }
-          if (currentEndYear !== nextEndYear) {
-            currentEndYear += endDiff > 0 ? 1 : -1;
+          if (currentEndYearNum !== nextEndYear) {
+            currentEndYearNum += endDiff > 0 ? 1 : -1;
           }
-          setCurrentYear(`${currentStartYear} ${currentEndYear}`);
+          setCurrentStartYear(`${currentStartYearNum}`);
+          setCurrentEndYear(`${currentEndYearNum}`);
         },
         ease: 'power1.inOut',
         onComplete: () => {
-          // выставляем конечные года
-          setCurrentYear(`${nextStartYear} ${nextEndYear}`);
+          setCurrentStartYear(`${nextStartYear}`);
+          setCurrentEndYear(`${nextEndYear}`);
         },
       });
 
       return animation;
     };
 
-    // запускаем анимацию если года отличаются
-    if (currentYear !== nextYears) {
-      animateYears();
-    }
-  }, [activeSlideIndex, currentYear, slides]);
+    animateYears();
+  }, [activeSlideIndex, currentStartYear, currentEndYear, slides]);
 
-  return <StyledSlide>{currentYear}</StyledSlide>;
+  return (
+    <StyledSlide>
+      <YearText color="rgba(56, 119, 238, 1)">{currentStartYear}</YearText>
+      <YearText color="rgba(239, 93, 168, 1)">{currentEndYear}</YearText>
+    </StyledSlide>
+  );
 };
 
 export default AnimatedYears;
-
-
