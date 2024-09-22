@@ -18,7 +18,8 @@ const Header = styled.header`
   display: flex;
   align-items: center;
   gap: 10%; 
-  margin-bottom: -100px;
+  margin-bottom: -120px;
+  margin-top: 7vh;
 `;
 
 const AppHeader = (): JSX.Element => {

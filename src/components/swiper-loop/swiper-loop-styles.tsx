@@ -16,12 +16,12 @@ export const CircleContainer = styled.div`
 
 export const Line = styled.div`
   position: absolute;
-  background-color: rgba(66, 86, 122, 0.2);
+  background-color: rgba(66, 86, 122, 0.1);
   z-index: 0;
 
   &:first-child { //вертикальная линия
     width: 2px; 
-    height: 100vh; 
+    height: 200vh; 
     left: 50%; 
     transform: translateX(-50%);
   }

@@ -11,6 +11,7 @@ const Container = styled.div`
   border-left: 1px solid rgba(66, 86, 122, 0.2);
   border-right: 1px solid rgba(66, 86, 122, 0.2);
   font-family: sans-serif;
+  padding-bottom: 5vh;
   overflow: hidden;
 `;
 
