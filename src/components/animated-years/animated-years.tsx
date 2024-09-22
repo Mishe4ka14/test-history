@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import gsap from 'gsap';
-import { Slide } from '../../context/slides-context'; 
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
 
 interface YearsDisplayProps {
   activeSlideIndex: number;
-  slides: Slide[];
 }
 
 const StyledSlide = styled.div`
@@ -18,6 +18,23 @@ const StyledSlide = styled.div`
   transition: opacity 0.5s ease;
   opacity: 1;
   z-index: 101;
+
+  @media (max-width: 868px) {
+    max-height: 120px;
+    font-size: 15vh;
+    line-height: 120px;
+  }
+
+  @media (max-width: 768px) {
+    visibility: visible;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 56px;
+    font-weight: 700;
+    line-height: 72.46px;
+    letter-spacing: -0.02em;
+  }
 `;
 
 const YearText = styled.span<{ color: string }>`
@@ -26,7 +43,9 @@ const YearText = styled.span<{ color: string }>`
   padding-right: 2.6vw;
 `;
 
-const AnimatedYears: React.FC<YearsDisplayProps> = ({ activeSlideIndex, slides }) => {
+const AnimatedYears: React.FC<YearsDisplayProps> = ({ activeSlideIndex }) => {
+  const slides = useSelector((store: RootState) => store.slides.slides);
+
   const [currentStartYear, setCurrentStartYear] = useState<string>(slides[activeSlideIndex].years.split(' ')[0]);
   const [currentEndYear, setCurrentEndYear] = useState<string>(slides[activeSlideIndex].years.split(' ')[1]);
 
@@ -66,10 +85,12 @@ const AnimatedYears: React.FC<YearsDisplayProps> = ({ activeSlideIndex, slides }
   }, [activeSlideIndex, currentStartYear, currentEndYear, slides]);
 
   return (
-    <StyledSlide>
-      <YearText color="rgba(56, 119, 238, 1)">{currentStartYear}</YearText>
-      <YearText color="rgba(239, 93, 168, 1)">{currentEndYear}</YearText>
-    </StyledSlide>
+    <>
+      <StyledSlide>
+        <YearText color="rgba(56, 119, 238, 1)">{currentStartYear}</YearText>
+        <YearText color="rgba(239, 93, 168, 1)">{currentEndYear}</YearText>
+      </StyledSlide>
+    </>
   );
 };
 

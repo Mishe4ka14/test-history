@@ -20,7 +20,7 @@ const SwiperLoopDot = styled(SlideDotComponent)<SwiperLoopDotProps>`
   width: ${({ active }) => (active ? '50px' : '6px')};
   height: ${({ active }) => (active ? '50px' : '6px')};
   border-radius: 50%;
-  background-color: ${({ active }) => (active ? '#fff' : 'rgba(66, 86, 122, 1)')};
+  background-color: ${({ active }) => (active ? ' rgb(238, 242, 250)' : 'rgba(66, 86, 122, 1)')};
   color: ${({ active }) => (active ? 'rgba(66, 86, 122, 1)' : 'transparent')};
   border: ${({ active }) => (active ? '1px solid black' : '1px')};
   display: flex;
@@ -32,7 +32,7 @@ const SwiperLoopDot = styled(SlideDotComponent)<SwiperLoopDotProps>`
   &:hover {
     width: 50px;
     height: 50px;
-    background-color: #fff;
+    background-color: rgb(238, 242, 250);
     border: 1px solid black;
   }
 `;

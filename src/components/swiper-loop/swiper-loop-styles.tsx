@@ -12,16 +12,20 @@ export const CircleContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  @media (max-width: 768px) {
+    visibility: hidden;
+    height: 260px;
+  }
 `;
 
 export const Line = styled.div`
   position: absolute;
-  background-color: rgba(66, 86, 122, 0.2);
+  background-color: rgba(66, 86, 122, 0.1);
   z-index: 0;
 
   &:first-child { //вертикальная линия
     width: 2px; 
-    height: 100vh; 
+    height: 200vh; 
     left: 50%; 
     transform: translateX(-50%);
   }
