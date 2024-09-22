@@ -18,6 +18,23 @@ const StyledSlide = styled.div`
   transition: opacity 0.5s ease;
   opacity: 1;
   z-index: 101;
+
+  @media (max-width: 868px) {
+    max-height: 120px;
+    font-size: 15vh;
+    line-height: 120px;
+  }
+
+  @media (max-width: 768px) {
+    visibility: visible;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 56px;
+    font-weight: 700;
+    line-height: 72.46px;
+    letter-spacing: -0.02em;
+  }
 `;
 
 const YearText = styled.span<{ color: string }>`
@@ -27,10 +44,10 @@ const YearText = styled.span<{ color: string }>`
 `;
 
 const AnimatedYears: React.FC<YearsDisplayProps> = ({ activeSlideIndex }) => {
-  const slides = useSelector((store: RootState) => store.slides.slides );
+  const slides = useSelector((store: RootState) => store.slides.slides);
+
   const [currentStartYear, setCurrentStartYear] = useState<string>(slides[activeSlideIndex].years.split(' ')[0]);
   const [currentEndYear, setCurrentEndYear] = useState<string>(slides[activeSlideIndex].years.split(' ')[1]);
-
 
   useEffect(() => {
     const nextYears = slides[activeSlideIndex].years;
@@ -68,10 +85,12 @@ const AnimatedYears: React.FC<YearsDisplayProps> = ({ activeSlideIndex }) => {
   }, [activeSlideIndex, currentStartYear, currentEndYear, slides]);
 
   return (
-    <StyledSlide>
-      <YearText color="rgba(56, 119, 238, 1)">{currentStartYear}</YearText>
-      <YearText color="rgba(239, 93, 168, 1)">{currentEndYear}</YearText>
-    </StyledSlide>
+    <>
+      <StyledSlide>
+        <YearText color="rgba(56, 119, 238, 1)">{currentStartYear}</YearText>
+        <YearText color="rgba(239, 93, 168, 1)">{currentEndYear}</YearText>
+      </StyledSlide>
+    </>
   );
 };
 

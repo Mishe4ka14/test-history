@@ -12,6 +12,10 @@ export const CircleContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  @media (max-width: 768px) {
+    visibility: hidden;
+    height: 260px;
+  }
 `;
 
 export const Line = styled.div`

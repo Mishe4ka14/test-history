@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Swiper as SwiperComponent, SwiperSlide } from 'swiper/react';
 import { Swiper as SwiperType } from 'swiper';
 import { Controller, Navigation } from 'swiper/modules';
@@ -38,14 +38,25 @@ const ArrowBtn = styled.button`
       background-color: white;
       color: rgba(66, 86, 122, 1);
     }
+
+    @media (max-width: 768px) {
+      width: 30px;
+      height: 25px;
+      display: block;
+  }
+
   }
 `;
 
 const ArrowsBox = styled.div`
-margin-top: 4vh;
-position: relative;
+  margin-top: 4vh;
+  position: relative;
   display: flex;
   gap: 40px;
+  @media (max-width: 768px) {
+    margin-top: 4vh;
+    gap: 25px;
+  }
 `
 
 const StyledSwiper = styled(SwiperComponent)`
@@ -58,6 +69,11 @@ const Counter = styled.p`
   margin-left: 10px;
   font-size: 18px;
   font-weight: normal;
+  @media (max-width: 768px) {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 18.12px;
+  }
 `;
 
 const StyledSwiperSlide = styled(SwiperSlide)`
@@ -68,6 +84,11 @@ const StyledSwiperSlide = styled(SwiperSlide)`
 const SwiperContainer = styled.div`
   margin-left: 7%;
   width: 20vw;
+  @media (max-width: 768px) {
+    position: absolute;
+    bottom: 4vh;
+    left: 4vw;
+  }
 `;
 
 const SwiperArrow: React.FC<SwiperArrowProps> = ({ setArrowSwiper, secondSwiper }) => {
@@ -106,6 +127,13 @@ const SwiperArrow: React.FC<SwiperArrowProps> = ({ setArrowSwiper, secondSwiper 
   const handleSlideChange = (swiper: SwiperType) => {
     setCurrentSlide(swiper.realIndex + 1);
   };
+
+  //слушаем изменение индекса в других слайдерах
+  useEffect(() => {
+    if (swiperRef.current) {
+      swiperRef.current.slideTo(activeSlideIndex);
+    }
+  }, [activeSlideIndex]);
 
   return (
     <>

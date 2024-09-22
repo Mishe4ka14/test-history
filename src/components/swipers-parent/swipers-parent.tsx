@@ -7,7 +7,7 @@ import styled from 'styled-components';
 const LoopBox = styled.div`
   display: flex;
   justify-content: center;
-`
+`;
 
 const ParentSwiper = () => {
   const [arrowSwiper, setArrowSwiper] = useState<SwiperType | null>(null);
@@ -23,13 +23,12 @@ const ParentSwiper = () => {
           secondSwiper={loopSwiper}
         />
       </LoopBox>
-      <SwiperArrow
-        setArrowSwiper={setArrowSwiper}
-        secondSwiper={loopSwiper}
-      />
+        <SwiperArrow
+          setArrowSwiper={setArrowSwiper}
+          secondSwiper={loopSwiper}
+        />
     </React.Fragment>
   );
 };
-
 
 export default ParentSwiper;
