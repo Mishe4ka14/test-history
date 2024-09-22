@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Swiper as SwiperComponent, SwiperSlide } from 'swiper/react';
 import { Swiper as SwiperType } from 'swiper';
-import { Controller } from 'swiper/modules';
+import { Controller, Navigation } from 'swiper/modules';
 import 'swiper/css';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,17 +14,39 @@ interface SwiperArrowProps {
 }
 
 const ArrowBtn = styled.button`
-  width: 50px;
-  height: 50px;
+  background-color: rgba(66, 86, 122, 1); 
+  color: rgba(66, 86, 122, 1); 
+  border: 1px solid rgba(66, 86, 122, 0.5);
   border-radius: 50%;
-  margin: 10px;
-  background-color: white;
-  transition: background-color 0.3s ease;
-  font-size: 24px;
-  &:hover {
-    background-color: gray;
+  z-index: 1000;
+  transition: background-color 0.3s ease, color 0.3s ease;
+
+  &:after {
+    font-size: 20px; 
+  }
+
+  //стилизуем встроенные кнопки свайпера 
+  &.swiper-button-prev,
+  &.swiper-button-next {
+    width: 50px; 
+    height: 50px;
+    position: relative;
+    background-color: rgb(238, 242, 250); 
+    color: rgba(66, 86, 122, 1); 
+
+    &:hover {
+      background-color: white;
+      color: rgba(66, 86, 122, 1);
+    }
   }
 `;
+
+const ArrowsBox = styled.div`
+margin-top: 4vh;
+position: relative;
+  display: flex;
+  gap: 40px;
+`
 
 const StyledSwiper = styled(SwiperComponent)`
   max-width: 120px;
@@ -44,7 +66,8 @@ const StyledSwiperSlide = styled(SwiperSlide)`
 `;
 
 const SwiperContainer = styled.div`
-  margin-left: 10%;
+  margin-left: 7%;
+  width: 20vw;
 `;
 
 const SwiperArrow: React.FC<SwiperArrowProps> = ({ setArrowSwiper, secondSwiper }) => {
@@ -85,28 +108,32 @@ const SwiperArrow: React.FC<SwiperArrowProps> = ({ setArrowSwiper, secondSwiper 
   };
 
   return (
-    <SwiperContainer>
-      <StyledSwiper
-        modules={[Controller]}
-        onSwiper={(swiper: SwiperType) => {
-          setArrowSwiper(swiper);
-          swiperRef.current = swiper;
-        }}
-        onSlideChange={handleSlideChange}
-        controller={{ control: secondSwiper }} // связан с swiperLoop
-        slidesPerView={1}
-        loop={true}
-      >
-        {slides.map((_, index) => (
-          <StyledSwiperSlide key={index} />
-        ))}
-      </StyledSwiper>
-      <Counter>
-        {String(currentSlide).padStart(2, '0')}/{String(totalSlides).padStart(2, '0')}
-      </Counter>
-      <ArrowBtn onClick={handlePrev}>&lt;</ArrowBtn>
-      <ArrowBtn onClick={handleNext}>&gt;</ArrowBtn>
-    </SwiperContainer>
+    <>
+      <SwiperContainer>
+        <StyledSwiper
+          modules={[Controller, Navigation]}
+          onSwiper={(swiper: SwiperType) => {
+            setArrowSwiper(swiper);
+            swiperRef.current = swiper;
+          }}
+          onSlideChange={handleSlideChange}
+          controller={{ control: secondSwiper }} // связан с swiperLoop
+          slidesPerView={1}
+          loop={true}
+          >
+          {slides.map((_, index) => (
+            <StyledSwiperSlide key={index} />
+          ))}
+        </StyledSwiper>
+        <Counter>
+          {String(currentSlide).padStart(2, '0')}/{String(totalSlides).padStart(2, '0')}
+        </Counter>
+        <ArrowsBox>
+          <ArrowBtn className='swiper-button-prev' onClick={handlePrev}></ArrowBtn>
+          <ArrowBtn className='swiper-button-next' onClick={handleNext}></ArrowBtn>
+        </ArrowsBox>
+      </SwiperContainer>
+    </>
   );
 };
 

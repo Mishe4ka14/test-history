@@ -13,8 +13,8 @@ const GlobalStyles = createGlobalStyle`
   .swiper-button-prev {
     background-color: white; 
     color: rgba(56, 119, 238, 1); 
-    width: 50px; 
-    height: 50px;
+    width: 40px; 
+    height: 40px;
     border-radius: 50%;
     z-index: 1000;
     &:after {
@@ -33,7 +33,7 @@ const EventItem = styled.li`
 `;
 
 const StyledSwiper = styled(SwiperComponent)`
-  max-width: 75vw;
+  max-width: 78vw;
   padding-left: 5vw;
   padding-right: 5vw;
 `;

@@ -17,7 +17,7 @@ const GradientBar = styled.div`
 const Header = styled.header`
   display: flex;
   align-items: center;
-  gap: 10%; 
+  gap: 6%; 
   margin-bottom: -120px;
   margin-top: 7vh;
 `;
