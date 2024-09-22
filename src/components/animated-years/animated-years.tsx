@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import gsap from 'gsap';
-import { Slide } from '../../context/slides-context'; 
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
 
 interface YearsDisplayProps {
   activeSlideIndex: number;
-  slides: Slide[];
 }
 
 const StyledSlide = styled.div`
@@ -26,9 +26,11 @@ const YearText = styled.span<{ color: string }>`
   padding-right: 2.6vw;
 `;
 
-const AnimatedYears: React.FC<YearsDisplayProps> = ({ activeSlideIndex, slides }) => {
+const AnimatedYears: React.FC<YearsDisplayProps> = ({ activeSlideIndex }) => {
+  const slides = useSelector((store: RootState) => store.slides.slides );
   const [currentStartYear, setCurrentStartYear] = useState<string>(slides[activeSlideIndex].years.split(' ')[0]);
   const [currentEndYear, setCurrentEndYear] = useState<string>(slides[activeSlideIndex].years.split(' ')[1]);
+
 
   useEffect(() => {
     const nextYears = slides[activeSlideIndex].years;

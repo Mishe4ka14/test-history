@@ -2,16 +2,16 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './components/app/App';
-import { SlidesProvider } from './context/slides-context';
+import { Provider } from 'react-redux';
+import store from './store'; 
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <SlidesProvider>
+    <Provider store={store}>
       <App />
-    </SlidesProvider>
+    </Provider>
   </React.StrictMode>
 );
-

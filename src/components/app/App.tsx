@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import AppHeader from '../app-header/app-header';
 import ParentSwiper from '../swipers-parent/swipers-parent';
+import SwiperContent from '../swiper-content/swiper-content';
 
 const Container = styled.div`
   margin: auto;
@@ -10,6 +11,7 @@ const Container = styled.div`
   border-left: 1px solid rgba(66, 86, 122, 0.2);
   border-right: 1px solid rgba(66, 86, 122, 0.2);
   font-family: sans-serif;
+  overflow: hidden;
 `;
 
 function App() {
@@ -17,6 +19,7 @@ function App() {
     <Container>
       <AppHeader/>
       <ParentSwiper/>
+      <SwiperContent/>
     </Container>
   );
 }

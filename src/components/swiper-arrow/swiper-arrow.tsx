@@ -4,6 +4,9 @@ import { Swiper as SwiperType } from 'swiper';
 import { Controller } from 'swiper/modules';
 import 'swiper/css';
 import styled from 'styled-components';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../store';
+import { setActiveSlideIndex } from '../../features/slider-slice';
 
 interface SwiperArrowProps {
   setArrowSwiper: (swiper: SwiperType) => void;
@@ -42,32 +45,38 @@ const StyledSwiperSlide = styled(SwiperSlide)`
 
 const SwiperContainer = styled.div`
   margin-left: 10%;
-`
+`;
 
 const SwiperArrow: React.FC<SwiperArrowProps> = ({ setArrowSwiper, secondSwiper }) => {
   const [currentSlide, setCurrentSlide] = useState(1);
-  const totalSlides = 6;
+  const dispatch = useDispatch();
+  
+  // получаем слайды и активный слайд
+  const slides = useSelector((store: RootState) => store.slides.slides);
+  const activeSlideIndex = useSelector((store: RootState) => store.slides.activeSlideIndex);
+  const totalSlides = slides.length;
+
   const swiperRef = useRef<SwiperType | null>(null);
 
+
+  // при смене слайда диспатчим новый активный стайд, чтобы забрать индекс в swiperContent 
   const handleNext = () => {
-    if (currentSlide < totalSlides) {
-      if (secondSwiper) {
-        secondSwiper.slideNext();
-      }
+    if (activeSlideIndex < totalSlides - 1) {
+      secondSwiper?.slideNext();
+      dispatch(setActiveSlideIndex(activeSlideIndex + 1));
     } else {
-      secondSwiper?.slideTo(0)
+      secondSwiper?.slideTo(0);
+      dispatch(setActiveSlideIndex(0));
     }
   };
 
   const handlePrev = () => {
-    if (currentSlide === 1) {
-      if (secondSwiper) {
-        secondSwiper.slideTo(totalSlides);
-      }
+    if (activeSlideIndex === 0) {
+      secondSwiper?.slideTo(totalSlides - 1);
+      dispatch(setActiveSlideIndex(totalSlides - 1));
     } else {
-      if (secondSwiper) {
-        secondSwiper.slidePrev();
-      }
+      secondSwiper?.slidePrev();
+      dispatch(setActiveSlideIndex(activeSlideIndex - 1));
     }
   };
 
@@ -84,13 +93,12 @@ const SwiperArrow: React.FC<SwiperArrowProps> = ({ setArrowSwiper, secondSwiper 
           swiperRef.current = swiper;
         }}
         onSlideChange={handleSlideChange}
-        controller={{ control: secondSwiper }} //связан с swiperLoop
+        controller={{ control: secondSwiper }} // связан с swiperLoop
         slidesPerView={1}
         loop={true}
       >
-        {[...Array(totalSlides)].map((_, index) => (
-          <StyledSwiperSlide key={index}>
-          </StyledSwiperSlide>
+        {slides.map((_, index) => (
+          <StyledSwiperSlide key={index} />
         ))}
       </StyledSwiper>
       <Counter>

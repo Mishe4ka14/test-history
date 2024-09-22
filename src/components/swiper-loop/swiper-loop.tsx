@@ -5,11 +5,12 @@ import { Controller } from 'swiper/modules';
 import 'swiper/css';
 import gsap from 'gsap';
 import SwiperLoopDot from '../swiper-loop-dot/swiper-loop-dot';
-import { useSlides } from '../../context/slides-context';
 import AnimatedYears from '../animated-years/animated-years';
-import { BlockTitle, CircleContainer, DotsWrapper, HoverNumber, Line, SwiperComponentStyled } from './swiper-loop-styles';
-
 //МНОГО СТИЛЕЙ, ПОЭТОМУ В ОТДЕЛЬНОМ ФАЙЛЕ
+import { BlockTitle, CircleContainer, DotsWrapper, HoverNumber, Line, SwiperComponentStyled } from './swiper-loop-styles';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../store';
+import { setActiveSlideIndex } from '../../features/slider-slice';
 
 interface SwiperLoopProps {
   setSwiperLoop: (swiper: SwiperType) => void;
@@ -18,13 +19,15 @@ interface SwiperLoopProps {
 }
 
 const SwiperLoop: React.FC<SwiperLoopProps> = ({ setSwiperLoop, firstSwiper, secondSwiper }) => {
+  const dispatch = useDispatch();
   const dotsWrapperRef = useRef<HTMLDivElement>(null);
   const [activeDot, setActiveDot] = useState<number>(0); // стейт для активной точки
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null); // cтейт для отслеживания наведенной точки
   const [rotationAngle, setRotationAngle] = useState<number>(0); // стейт для угла вращения
   const radius = 265;
   
-  const slides = useSlides();
+  // получаем слайды из редакса
+  const slides = useSelector((store: RootState) => store.slides.slides);
   const totalSlides = slides.length;
   
   const anglePerDot = (Math.PI * 2) / totalSlides; // выставляем угол точек, в зависимости от количества
@@ -48,14 +51,17 @@ const SwiperLoop: React.FC<SwiperLoopProps> = ({ setSwiperLoop, firstSwiper, sec
       });
     }
 
+    dispatch(setActiveSlideIndex(newActiveIndex));
     setActiveDot(newActiveIndex);
   };
 
   const handleSlideChange = (swiper: SwiperType) => {
     const newIndex = swiper.realIndex;
     if (newIndex !== activeDot) {
-      updateRotation(newIndex);
-      setActiveDot(newIndex);
+
+      updateRotation(newIndex); //вращаем
+      dispatch(setActiveSlideIndex(newIndex)); //диспатчим новым активный индекс
+      setActiveDot(newIndex); //устанавливаем новую активную точку
       
       if (firstSwiper && firstSwiper.realIndex !== newIndex) {
         firstSwiper.slideTo(newIndex);
@@ -116,7 +122,7 @@ const SwiperLoop: React.FC<SwiperLoopProps> = ({ setSwiperLoop, firstSwiper, sec
         {slides.map((_, index) => (
         <SwiperSlide key={index}></SwiperSlide>
       ))}
-        <AnimatedYears activeSlideIndex={activeDot} slides={slides} />
+        <AnimatedYears activeSlideIndex={activeDot}/>
       </SwiperComponentStyled>
     </CircleContainer>
   );

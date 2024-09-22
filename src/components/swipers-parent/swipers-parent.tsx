@@ -15,7 +15,7 @@ const ParentSwiper = () => {
 
   // передаем оба свайпера друг другу для синхронизации
   return (
-    <div>
+    <React.Fragment>
       <LoopBox>
         <SwiperLoop
           setSwiperLoop={setLoopSwiper}
@@ -27,7 +27,7 @@ const ParentSwiper = () => {
         setArrowSwiper={setArrowSwiper}
         secondSwiper={loopSwiper}
       />
-    </div>
+    </React.Fragment>
   );
 };
 
